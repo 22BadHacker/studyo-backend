@@ -3,7 +3,8 @@
 ```markdown
 # STÜDYO® Backend 🎶
 
-The backend for **STÜDYO®** — built with [Laravel](https://laravel.com/), providing RESTful APIs to power the frontend music experience.
+The backend for **STÜDYO®** — built with [Laravel](https://laravel.com/),
+providing RESTful APIs to power the frontend music experience.
 
 ---
 
