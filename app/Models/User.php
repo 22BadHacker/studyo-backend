@@ -6,11 +6,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -21,6 +22,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',           // 'user', 'artist', 'admin'
+        'profile_image', 
+        'bio', 
     ];
 
     /**
@@ -45,4 +49,47 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+
+
+    // Tracks
+    public function tracks()
+    {
+        return $this->hasMany(Track::class);
+    }
+
+    public function playlists()
+    {
+        return $this->hasMany(Playlist::class);
+    }
+
+    public function albums()
+    {
+        return $this->hasMany(Album::class);
+    }
+
+    public function libraryTracks()
+    {
+        return $this->belongsToMany(Track::class, 'library_tracks')->withTimestamps();
+    }
+
+    public function libraryPlaylists()
+    {
+        return $this->belongsToMany(Playlist::class, 'library_playlists')->withTimestamps();
+    }
+
+
+    // Users I follow
+    public function followings()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'follower_id', 'followed_id')->withTimestamps();
+    }
+
+    // Users who follow me
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'followed_id', 'follower_id')->withTimestamps();
+    }
+
+    
 }
