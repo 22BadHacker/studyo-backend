@@ -6,7 +6,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:3000', 'https://studyo-beta.vercel.app/'], // your frontend URL
+    'allowed_origins' => ['http://localhost:3000', 'https://studyo-beta.vercel.app'], // your frontend URL
 
     'allowed_origins_patterns' => [],
 
