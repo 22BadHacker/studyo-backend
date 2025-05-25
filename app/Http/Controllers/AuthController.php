@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -77,4 +78,35 @@ class AuthController extends Controller
         $request->user()->currentAccessToken()->delete();
         return response()->json(['message' => 'Successfully logged out']);
     }
+
+
+
+    public function googleAuth(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            // Create user if doesn't exist
+            $user = User::create([
+                'email' => $request->email,
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'profile_image' => $request->profile_image,
+                'role' => 'user',
+                'email_verified_at' => now(),
+                'password' => bcrypt(Str::random(16)), // dummy password
+            ]);
+        }
+
+        Auth::login($user);
+
+        $token = $user->createToken('authToken')->plainTextToken;
+
+        return response()->json([
+            'success' => true,
+            'user' => $user,
+            'token' => $token,
+        ]);
+    }
+
 }
