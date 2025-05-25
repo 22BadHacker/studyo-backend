@@ -32,9 +32,11 @@ class AuthController extends Controller
         $token = $user->createToken('studyo_token')->plainTextToken;
 
         return response()->json([
-            'access_token' => $token,
+            'status' => true,
+            'token' => $token,
             'token_type'   => 'Bearer',
             'user'         => $user,
+            'message'=> 'User registered successfully'
         ], 201);
     }
 
@@ -49,15 +51,17 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
+            return response()->json(['message' => 'Invalid email or password.', 'status' => false], 401);
         }
 
         $token = $user->createToken('studyo_token')->plainTextToken;
 
         return response()->json([
-            'access_token' => $token,
+            'status' => true,
+            'token' => $token,
             'token_type'   => 'Bearer',
             'user'         => $user,
+            'message'=> 'User logged in successfully'
         ]);
     }
 
