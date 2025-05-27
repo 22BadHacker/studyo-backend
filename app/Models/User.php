@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -19,8 +20,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'first_name',
-        'last_name',
+        'username',
         'email',
         'password',
         'role',           // 'user', 'artist', 'admin'
@@ -49,6 +49,16 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+
+    public static function boot()
+    {
+    parent::boot();
+
+    static::creating(function ($user) {
+        $user->public_id = 'user_' . Str::random(12); // Example: user_6f3a9b2c1a2b
+    });
     }
 
 

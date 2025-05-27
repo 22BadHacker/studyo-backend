@@ -14,8 +14,7 @@ class AuthController extends Controller
     public function register(Request $request) {
         
         $request->validate([
-             'first_name' => 'required|string|max:255',
-            'last_name'  => 'required|string|max:255',
+            'username'  => 'required|string|max:255',
             'email'    => 'required|string|email|unique:users',
             'password' => 'required|string|min:6',
             // 'role'     => 'in:user,artist,admin',
@@ -23,8 +22,7 @@ class AuthController extends Controller
 
 
         $user = User::create([
-            'first_name' => $request->first_name,
-            'last_name'  => $request->last_name,
+            'username'  => $request->username,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
             // 'role'     => $request->role ?? 'user',
@@ -89,9 +87,8 @@ class AuthController extends Controller
             // Create user if doesn't exist
             $user = User::create([
                 'email' => $request->email,
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'profile_image' => $request->profile_image,
+                'username' => $request->username,
+                'image' => $request->profile_image,
                 'role' => 'user',
                 'email_verified_at' => now(),
                 'password' => bcrypt(Str::random(16)), // dummy password

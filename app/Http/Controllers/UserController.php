@@ -10,9 +10,13 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($public_id)
     {
-        return User::all();
+        $user = User::where('public_id', $public_id)
+            ->with(['tracks', 'albums', 'playlists'])
+            ->firstOrFail();
+
+        return response()->json($user);
     }
 
     /**
@@ -46,4 +50,25 @@ class UserController extends Controller
     {
         //
     }
+
+    public function showPublic($public_id)
+    {
+        $user = User::where('public_id', $public_id)->firstOrFail();
+         if (!$user) {
+        return response()->json(['error' => 'User not found'], 404);
+        }
+        return response()->json($user);
+
+        // return response()->json([
+        // 'id' => $user->id,
+        // 'username' => $user->username,
+        // 'email' => $user->email,
+        // 'profile_image' => $user->profile_image,
+        // 'bio' => $user->bio,
+        // ]);
+    }
+
+    
+
+    
 }

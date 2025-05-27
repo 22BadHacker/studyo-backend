@@ -43,4 +43,10 @@ class Track extends Model
     {
         return $this->belongsToMany(User::class, 'library_tracks')->withTimestamps();
     }
+
+
+    public function genre()
+    {
+        return $this->belongsTo(Genre::class);
+    }
 }
