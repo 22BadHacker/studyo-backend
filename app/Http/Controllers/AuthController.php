@@ -17,7 +17,7 @@ class AuthController extends Controller
             'username'  => 'required|string|max:255',
             'email'    => 'required|string|email|unique:users',
             'password' => 'required|string|min:6',
-            // 'role'     => 'in:user,artist,admin',
+            'role'     => 'in:user,artist,admin',
         ]);
 
 
@@ -25,7 +25,7 @@ class AuthController extends Controller
             'username'  => $request->username,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
-            // 'role'     => $request->role ?? 'user',
+            'role'     => $request->role,
         ]);
 
         $token = $user->createToken('studyo_token')->plainTextToken;

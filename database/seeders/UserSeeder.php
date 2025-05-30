@@ -19,11 +19,11 @@ class UserSeeder extends Seeder
         // // Create 20 regular users
         // User::factory()->count(20)->state(['role' => 'user'])->create();
 
-        User::factory(70)->create();
+        User::factory(30)->create();
 
         // Optional: 1 admin
         User::create([
-            // 'public_id' => 'admin1',
+            'public_id' => 'admin1',
             'username' => 'AdminMaster',
             'email' => 'user@example.com',
             'password' => bcrypt('adminpass'),
