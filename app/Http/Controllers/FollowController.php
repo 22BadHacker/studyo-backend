@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FollowController extends Controller
 {
@@ -46,15 +48,24 @@ class FollowController extends Controller
         //
     }
 
-    // public function follow(Request $request)
-    // {
-    //     $request->validate([
-    //         'follower_id' => 'required|exists:users,id',
-    //         'followed_id' => 'required|exists:users,id'
-    //     ]);
+   public function follow($id)
+    {
+        $user = User::findOrFail($id);
+        Auth::user()->following()->attach($user->id);
+        return response()->json(['message' => 'Followed']);
+    }
 
-    //     $follow = Follow::create($request->all());
+    public function unfollow($id)
+    {
+        $user = User::findOrFail($id);
+        Auth::user()->following()->detach($user->id);
+        return response()->json(['message' => 'Unfollowed']);
+    }
 
-    //     return response()->json($follow, 201);
-    // }
+    public function check($id)
+    {
+        $user = User::findOrFail($id);
+        $isFollowing = Auth::user()->following->contains($user->id);
+        return response()->json(['isFollowing' => $isFollowing]);
+    }
 }

@@ -78,7 +78,7 @@ class AuthController extends Controller
     }
 
 
-
+    // Google Auth
     public function googleAuth(Request $request)
     {
         $user = User::where('email', $request->email)->first();
@@ -104,6 +104,23 @@ class AuthController extends Controller
             'user' => $user,
             'token' => $token,
         ]);
+    }
+    
+    
+    // Update API
+    public function update(Request $request)
+    {
+        $user = $request->user();
+
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            // Add other fields as necessary
+        ]);
+
+        $user->update($validatedData);
+
+        return response()->json($user);
     }
 
 }

@@ -30,32 +30,22 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/google-auth', [AuthController::class, 'googleAuth']);
 
 
+// Route::get('/artists', [UserController::class, 'getArtists']);
+
+Route::get('/artists', [UserController::class, 'artists']);
+
+Route::get('/users/{public_id}', [UserController::class, 'showByPublicId']);
 
 
 
-
-
-// Route::group([
-//     "middleware" => ["auth:sanctum"]
-// ], function () {
-   
-//     Route::get('profile', [AuthController::class, 'profile']);
-//     Route::get('logout', [AuthController::class, 'logout']);
-
-
-//    Route::apiResource('users', UserController::class);
-//     // Route::apiResource('tracks', TrackController::class);
-//     // Route::apiResource('albums', AlbumController::class);
-//     // Route::apiResource('playlists', PlaylistController::class);
-//     // Route::apiResource('likes', LikeController::class);
-//     // Route::apiResource('follows', FollowController::class);
-
-// });
 
 
 Route::middleware('auth:sanctum')->group(function () {
-
+    // To upadate profile
+    Route::put('/profile', [AuthController::class, 'update']);
+    // To get profile
     Route::get('profile', [AuthController::class, 'profile']);
+    // To logout
     Route::get('logout', [AuthController::class, 'logout']);
 
 
@@ -85,4 +75,13 @@ Route::middleware('auth:sanctum')->group(function () {
     // Genres
     Route::apiResource('genres', GenreController::class)->only(['index', 'show']);
 
+
+    Route::post('/follow/{id}', [FollowController::class, 'follow']);
+    Route::post('/unfollow/{id}', [FollowController::class, 'unfollow']);
+    Route::get('/follow-status/{id}', [FollowController::class, 'check']);
+
 });
+
+
+
+// Route::get('/follow/stats/{id}', [FollowController::class, 'stats']);
