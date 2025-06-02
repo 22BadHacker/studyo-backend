@@ -69,6 +69,16 @@ class UserController extends Controller
     }
 
 
+    public function resolveProfile($public_id)
+    {
+        $user = User::where('public_id', $public_id)->firstOrFail();
+        
+        return response()->json([
+            'redirect_to' => $user->role === 'artist' ? "/artist/$public_id" : "/users/$public_id"
+        ]);
+    }
+
+
    public function artists()
     {
         $artists = User::where('role', 'artist')

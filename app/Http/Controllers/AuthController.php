@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -18,6 +19,7 @@ class AuthController extends Controller
             'email'    => 'required|string|email|unique:users',
             'password' => 'required|string|min:6',
             'role'     => 'in:user,artist,admin',
+            'date_of_birth' => 'required|date',
         ]);
 
 
@@ -26,6 +28,7 @@ class AuthController extends Controller
             'email'    => $request->email,
             'password' => Hash::make($request->password),
             'role'     => $request->role,
+            'date_of_birth' => $request->date_of_birth
         ]);
 
         $token = $user->createToken('studyo_token')->plainTextToken;
@@ -69,6 +72,8 @@ class AuthController extends Controller
 
         return response()->json($request->user());
     }
+
+    
 
     // Logout API
     public function logout(Request $request) {

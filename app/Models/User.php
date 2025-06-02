@@ -26,6 +26,7 @@ class User extends Authenticatable
         'role',           // 'user', 'artist', 'admin'
         'profile_image', 
         'bio', 
+        'date_of_birth'
     ];
 
     /**
@@ -54,11 +55,12 @@ class User extends Authenticatable
 
     public static function boot()
     {
-    parent::boot();
+        parent::boot();
 
-    static::creating(function ($user) {
-        $user->public_id = 'user_' . Str::random(12); // Example: user_6f3a9b2c1a2b
-    });
+        static::creating(function ($user) {
+            $user->public_id = Str::random(22); // 22 Example: user_6f3a9b2c1a2b
+            // $user->public_id = 'user_' . Str::random(22); // 22 Example: user_6f3a9b2c1a2b
+        });
     }
 
 

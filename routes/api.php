@@ -13,7 +13,8 @@ use App\Http\Controllers\{
     FollowController,
     LikeController,
     LibraryController,
-    GenreController
+    GenreController,
+    ProfileController
 };
 
 // Route::get('/user', function (Request $request) {
@@ -40,13 +41,19 @@ Route::get('/users/{public_id}', [UserController::class, 'showByPublicId']);
 
 
 
+
+
 Route::middleware('auth:sanctum')->group(function () {
     // To upadate profile
     Route::put('/profile', [AuthController::class, 'update']);
     // To get profile
-    Route::get('profile', [AuthController::class, 'profile']);
+    // Route::get('profile', [AuthController::class, 'profile']);
     // To logout
     Route::get('logout', [AuthController::class, 'logout']);
+
+
+    Route::get('/profile', [ProfileController::class, 'show']);
+    Route::post('/profile', [ProfileController::class, 'update']);
 
 
    Route::apiResource('users', UserController::class);
@@ -54,6 +61,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
    // Profile
     Route::get('/profile/{public_id}', [UserController::class, 'showPublic']);
+    
+   // Profile
+    Route::get('/resolve-profile/{public_id}', [UserController::class, 'resolveProfile']);
 
 
     // Tracks
