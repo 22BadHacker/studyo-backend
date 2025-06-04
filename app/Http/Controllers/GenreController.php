@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Storage;
 
 use App\Models\Genre;
 use Illuminate\Http\Request;
@@ -12,7 +13,12 @@ class GenreController extends Controller
      */
     public function index()
     {
-        return Genre::all();
+        $genres = Genre::all()->map(function ($genre) {
+        $genre->image = $genre->image ? asset('storage/' . $genre->image) : null;
+        return $genre;
+        });
+
+        return response()->json($genres);
     }
 
     /**
@@ -21,18 +27,22 @@ class GenreController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-        'name' => 'required|string|unique:genres',
-        'image' => 'nullable|image|max:2048',
+        'name' => 'required|unique:genres',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        $imagePath = $request->file('image')?->store('genres', 'public');
+        $imagePath = null;
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('genres', 'public');
+        }
 
         $genre = Genre::create([
             'name' => $request->name,
-            'image' => $imagePath ? "/storage/$imagePath" : null,
+            'image' => $imagePath,
         ]);
 
-        return response()->json($genre, 201);
+        return response()->json($genre);
     }
 
     /**

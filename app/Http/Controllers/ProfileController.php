@@ -31,4 +31,25 @@ class ProfileController extends Controller
 
         return response()->json($user);
     }
+
+
+    // public function updateImage(Request $request)
+    //     {
+    //         $user = $request->user();
+
+    //         if ($request->hasFile('image')) {
+    //             $request->validate([
+    //                 'image' => 'image|max:2048',
+    //             ]);
+
+    //             $path = $request->file('image')->store('profile_images', 'public');
+    //             $user->profile_image = '/storage/' . $path;
+    //             $user->save();
+
+    //             return response()->json(['message' => 'Profile image updated', 'profile_image' => $user->profile_image]);
+    //         }
+
+    //         return response()->json(['message' => 'No image uploaded'], 422);
+    //     }
+
 }

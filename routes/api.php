@@ -17,9 +17,7 @@ use App\Http\Controllers\{
     ProfileController
 };
 
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
+
 
 
 
@@ -30,8 +28,6 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/google-auth', [AuthController::class, 'googleAuth']);
 
-
-// Route::get('/artists', [UserController::class, 'getArtists']);
 
 Route::get('/artists', [UserController::class, 'artists']);
 
@@ -44,16 +40,21 @@ Route::get('/users/{public_id}', [UserController::class, 'showByPublicId']);
 
 
 Route::middleware('auth:sanctum')->group(function () {
+    
     // To upadate profile
     Route::put('/profile', [AuthController::class, 'update']);
-    // To get profile
-    // Route::get('profile', [AuthController::class, 'profile']);
+    Route::post('/profile/image', [AuthController::class, 'updateImage']);
+
     // To logout
     Route::get('logout', [AuthController::class, 'logout']);
+    
+    Route::post('/user/update-profile', [UserController::class, 'updateProfile']);
+    // Route::post('/user/update', [UserController::class, 'update']);
 
 
     Route::get('/profile', [ProfileController::class, 'show']);
-    Route::post('/profile', [ProfileController::class, 'update']);
+    Route::post('/profile/update', [ProfileController::class, 'update']);
+    // Route::post('/profile/update', [UserController::class, 'update']);
 
 
    Route::apiResource('users', UserController::class);
@@ -83,7 +84,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     // Genres
-    Route::apiResource('genres', GenreController::class)->only(['index', 'show']);
+    // Route::apiResource('genres', GenreController::class)->only(['index', 'show']);
 
 
     Route::post('/follow/{id}', [FollowController::class, 'follow']);
@@ -91,6 +92,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/follow-status/{id}', [FollowController::class, 'check']);
 
 });
+
+
+Route::get('/genres', [GenreController::class, 'index']);
+Route::post('/genres', [GenreController::class, 'store']); 
 
 
 

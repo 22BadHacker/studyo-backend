@@ -12,35 +12,42 @@ use Illuminate\Support\Facades\Storage;
 class AuthController extends Controller
 {
     // Register API (name, email, password, confirm_pass)
-    public function register(Request $request) {
-        
-        $request->validate([
-            'username'  => 'required|string|max:255',
-            'email'    => 'required|string|email|unique:users',
-            'password' => 'required|string|min:6',
-            'role'     => 'in:user,artist,admin',
-            'date_of_birth' => 'required|date',
-        ]);
+    public function register(Request $request)
+{
+    $request->validate([
+        'username'       => 'required|string|max:255',
+        'email'          => 'required|string|email|unique:users',
+        'password'       => 'required|string|min:6',
+        'role'           => 'in:user,artist,admin',
+        'date_of_birth'  => 'required|date',
+        'profile_image'  => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ]);
 
-
-        $user = User::create([
-            'username'  => $request->username,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password),
-            'role'     => $request->role,
-            'date_of_birth' => $request->date_of_birth
-        ]);
-
-        $token = $user->createToken('studyo_token')->plainTextToken;
-
-        return response()->json([
-            'status' => true,
-            'token' => $token,
-            'token_type'   => 'Bearer',
-            'user'         => $user,
-            'message'=> 'User registered successfully'
-        ], 201);
+    $profileImagePath = null;
+    if ($request->hasFile('profile_image')) {
+        $profileImagePath = $request->file('profile_image')->store('profile_images', 'public');
     }
+
+    $user = User::create([
+        'username'      => $request->username,
+        'email'         => $request->email,
+        'password'      => Hash::make($request->password),
+        'role'          => $request->role,
+        'date_of_birth' => $request->date_of_birth,
+        'profile_image' => $profileImagePath,
+    ]);
+
+    $token = $user->createToken('studyo_token')->plainTextToken;
+
+    return response()->json([
+        'status'      => true,
+        'token'       => $token,
+        'token_type'  => 'Bearer',
+        'user'        => $user,
+        'message'     => 'User registered successfully'
+    ], 201);
+}
+
 
     // Login API (email, password)
     public function login(Request $request) {
@@ -127,5 +134,26 @@ class AuthController extends Controller
 
         return response()->json($user);
     }
+
+
+
+     public function updateImage(Request $request)
+        {
+            $user = $request->user();
+
+            if ($request->hasFile('image')) {
+                $request->validate([
+                    'image' => 'image|max:2048',
+                ]);
+
+                $path = $request->file('image')->store('profile_images', 'public');
+                $user->profile_image = '/storage/' . $path;
+                $user->save();
+
+                return response()->json(['message' => 'Profile image updated', 'profile_image' => $user->profile_image]);
+            }
+
+            return response()->json(['message' => 'No image uploaded'], 422);
+        }
 
 }
