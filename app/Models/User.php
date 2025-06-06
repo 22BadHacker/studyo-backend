@@ -26,7 +26,8 @@ class User extends Authenticatable
         'role',           // 'user', 'artist', 'admin'
         'profile_image', 
         'bio', 
-        'date_of_birth'
+        'date_of_birth',
+        'gender',
     ];
 
     /**

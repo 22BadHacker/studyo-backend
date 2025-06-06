@@ -19,22 +19,22 @@ class AuthController extends Controller
         'email'          => 'required|string|email|unique:users',
         'password'       => 'required|string|min:6',
         'role'           => 'in:user,artist,admin',
-        'date_of_birth'  => 'required|date',
-        'profile_image'  => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        // 'date_of_birth'  => 'required|date',
+        // 'profile_image'  => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
     ]);
 
-    $profileImagePath = null;
-    if ($request->hasFile('profile_image')) {
-        $profileImagePath = $request->file('profile_image')->store('profile_images', 'public');
-    }
+    // $profileImagePath = null;
+    // if ($request->hasFile('profile_image')) {
+    //     $profileImagePath = $request->file('profile_image')->store('profile_images', 'public');
+    // }
 
     $user = User::create([
         'username'      => $request->username,
         'email'         => $request->email,
         'password'      => Hash::make($request->password),
         'role'          => $request->role,
-        'date_of_birth' => $request->date_of_birth,
-        'profile_image' => $profileImagePath,
+        // 'date_of_birth' => $request->date_of_birth,
+        // 'profile_image' => $profileImagePath,
     ]);
 
     $token = $user->createToken('studyo_token')->plainTextToken;
