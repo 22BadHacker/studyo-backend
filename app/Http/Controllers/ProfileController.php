@@ -18,7 +18,7 @@ class ProfileController extends Controller
 
         $data = $request->validate([
             'username' => 'string|max:255',
-            'bio' => 'nullable|string',
+            'email' => 'nullable|string',
             'profile_image' => 'nullable|image|max:2048',
         ]);
 

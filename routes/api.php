@@ -91,6 +91,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/unfollow/{id}', [FollowController::class, 'unfollow']);
     Route::get('/follow-status/{id}', [FollowController::class, 'check']);
 
+
+
+
+
+
+    // new User Profilees 
+    Route::get('/user/profile', [UserController::class, 'edit']);
+    Route::put('/user/profile', [UserController::class, 'update']);
+
 });
 
 

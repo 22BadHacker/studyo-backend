@@ -49,36 +49,27 @@ class UserController extends Controller
     public function update(Request $request)
     {
         
-        $user = $request->user();
-
+        $user = auth()->user(); // Must be logged in via Sanctum
+        //  $user = $request->user(); // Must be logged in via Sanctum
         $validated = $request->validate([
             'username' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:8',
-            // 'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'bio' => 'nullable|string',
-            'role' => 'required|in:artist,user',
-            'date_of_birth' => 'nullable|date',
-            'gender' => 'nullable|string',
-
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'profile_image' => 'nullable|image|max:2048',
         ]);
 
-        $user->username = $request->username;
-        $user->email = $request->email;
-        $user->gender = $request->gender;
-        $user->bio = $request->bio;
-        $user->role = $request->role;
-        $user->date_of_birth = $request->date_of_birth;
-
-        if (!empty($validated['password'])) {
-            $user->password = bcrypt($validated['password']);
+        if ($request->hasFile('profile_image')) {
+            if($user->profile_image) {
+                Storage::disk("public")->delete($user->profile_image);
+            }
+            $path = $request->file('profile_image')->store('profiles', 'public');
+            $validated['profile_image'] = '/storage/' . $path;
         }
 
-        $user->save();
+        $user->update($validated);
 
         return response()->json([
-            'message' => 'Profile updated successfully.',
-            'user' => $user,
+            'message' => 'Profile updated successfully',
+            'user' => $user
         ]);
        
     }
