@@ -18,7 +18,7 @@ class ProfileController extends Controller
 
         $data = $request->validate([
             'username' => 'string|max:255',
-            'email' => 'nullable|string',
+            // 'email' => 'nullable|string',
             'profile_image' => 'nullable|image|max:2048',
         ]);
 
@@ -33,23 +33,18 @@ class ProfileController extends Controller
     }
 
 
-    // public function updateImage(Request $request)
-    //     {
-    //         $user = $request->user();
+    public function removeImage(Request $request)
+    {
+        $user = $request->user();
 
-    //         if ($request->hasFile('image')) {
-    //             $request->validate([
-    //                 'image' => 'image|max:2048',
-    //             ]);
+        if ($user->profile_image && Storage::disk('public')->exists(str_replace('/storage/', '', $user->profile_image))) {
+            Storage::disk('public')->delete(str_replace('/storage/', '', $user->profile_image));
+        }
 
-    //             $path = $request->file('image')->store('profile_images', 'public');
-    //             $user->profile_image = '/storage/' . $path;
-    //             $user->save();
+        $user->profile_image = null;
+        $user->save();
 
-    //             return response()->json(['message' => 'Profile image updated', 'profile_image' => $user->profile_image]);
-    //         }
-
-    //         return response()->json(['message' => 'No image uploaded'], 422);
-    //     }
+        return response()->json(['message' => 'Profile image removed.']);
+    }
 
 }

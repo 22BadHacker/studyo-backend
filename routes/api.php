@@ -54,7 +54,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::post('/profile/update', [ProfileController::class, 'update']);
-    // Route::post('/profile/update', [UserController::class, 'update']);
+    Route::post('/profile/remove-image', [ProfileController::class, 'removeImage']);
 
 
    Route::apiResource('users', UserController::class);
