@@ -19,7 +19,7 @@ class ProfileController extends Controller
         $data = $request->validate([
             'username' => 'string|max:255',
             // 'email' => 'nullable|string',
-            'profile_image' => 'nullable|image|max:2048',
+            'profile_image' => 'nullable|image | mimes:jpeg,png,jpg,gif,webp, avif, svg|max:2048',
         ]);
 
         if ($request->hasFile('profile_image')) {

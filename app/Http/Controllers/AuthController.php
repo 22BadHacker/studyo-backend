@@ -143,7 +143,7 @@ class AuthController extends Controller
 
             if ($request->hasFile('image')) {
                 $request->validate([
-                    'image' => 'image|max:2048',
+                    'image' => 'image | mimes:jpeg,png,jpg,gif,webp, avif, svg|max:2048',
                 ]);
 
                 $path = $request->file('image')->store('profile_images', 'public');
