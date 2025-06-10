@@ -3,19 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\Track;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class TrackController extends Controller
 {
+
+    use AuthorizesRequests;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return response()->json(Track::with('genre', 'user', 'album')->get());
-        // return Track::with(['user', 'album'])->get();
+       return Track::with(['album', 'genre', 'user'])->latest()->get();
     }
 
     /**
@@ -23,40 +25,24 @@ class TrackController extends Controller
      */
     public function store(Request $request)
     {
-        // $request->validate([
-        //     'title' => 'required|string',
-        //     'artist' => 'required|string',
-        //     'file_path' => 'required|string',
-        //     'user_id' => 'required|exists:users,id',
-        //     'genre_id' => 'nullable|exists:genres,id',
-        // ]);
-
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'file_path' => 'required|file|mimes:mp3,wav,ogg',
-            'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
-            'genre_id' => 'nullable|exists:genres,id'
+        $validated = $request->validate([
+            'title' => 'required|string',
+            'file_path' => 'required|mimes:mp3,wav',
+            'cover_image' => 'nullable|image',
+            'duration' => 'required|integer',
+            'album_id' => 'nullable|exists:albums,id',
+            'genre_id' => 'required|exists:genres,id',
         ]);
 
-         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
+        $validated['user_id'] = auth()->id();
 
+        $validated['file_path'] = $request->file('file_path')->store('tracks', 'public');
 
-        $musicPath = $request->file('file_path')->store('tracks', 'public');
-
-        $coverPath = null;
         if ($request->hasFile('cover_image')) {
-            $coverPath = $request->file('cover_image')->store('track_covers', 'public');
+            $validated['cover_image'] = $request->file('cover_image')->store('track_covers', 'public');
         }
 
-        $track = Track::create([
-            'title' => $request->title,
-            'user_id' => auth()->id(),
-            'genre_id' => $request->genre_id,
-            'file_path' => $musicPath,
-            'cover_image' => $coverPath,
-        ]);
+        $track = Track::create($validated);
 
         return response()->json($track, 201);
 
@@ -66,37 +52,39 @@ class TrackController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show(Track $track)
     {
-        $track = Track::with('genre', 'user')->findOrFail($id);
-        return response()->json($track);
+        return $track->load(['album', 'genre', 'user']);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+     public function update(Request $request, Track $track)
     {
-        //
+        $this->authorize('update', $track);
+
+        $data = $request->only(['title', 'duration', 'album_id', 'genre_id']);
+
+        if ($request->hasFile('cover_image')) {
+            $data['cover_image'] = $request->file('cover_image')->store('track_covers', 'public');
+        }
+
+        $track->update($data);
+
+        return response()->json($track);
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Track $track)
     {
-        $track = Track::findOrFail($id);
-
-        // Delete files if they exist
-        if ($track->file_path) {
-            Storage::disk('public')->delete($track->file_path);
-        }
-
-        if ($track->cover_image) {
-            Storage::disk('public')->delete($track->cover_image);
-        }
+       $this->authorize('delete', $track);
 
         $track->delete();
-        return response()->json(['message' => 'Track deleted successfully']);
+
+        return response()->json(null, 204);
     }
 }
