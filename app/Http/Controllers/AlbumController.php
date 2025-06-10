@@ -29,7 +29,7 @@ class AlbumController extends Controller
             'description' => 'nullable|string',
             'cover_image' => 'nullable|image',
             'genre_id' => 'required|exists:genres,id',
-            // 'release_date'=> 'nullable|date',
+            'release_date'=> 'required|date',
         ]);
 
         if ($request->hasFile('cover_image')) {
