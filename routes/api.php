@@ -35,6 +35,8 @@ Route::get('/users/{public_id}', [UserController::class, 'showByPublicId']);
 
 
 
+Route::get('/users/{public_id}/albums', [AlbumController::class, 'getByPublicId']);
+
 
 
 

@@ -14,6 +14,8 @@ class Album extends Model
         'description',
         'cover_image',
         'user_id',
+        'genre_id',
+        'release_date',
     ];
 
     public function user()

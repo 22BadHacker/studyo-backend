@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Album;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -81,4 +82,18 @@ class AlbumController extends Controller
 
         return response()->json(null, 204);
     }
+
+
+
+    public function getByPublicId($public_id)
+    {
+        $user = User::where('public_id', $public_id)->firstOrFail();
+
+        $albums = Album::where('user_id', $user->id)
+            ->with('genre') 
+            ->get();
+
+        return response()->json($albums);
+    }
+
 }
