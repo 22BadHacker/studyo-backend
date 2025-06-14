@@ -6,6 +6,7 @@ use App\Models\Album;
 use App\Models\Track;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class SearchController extends Controller
 {
@@ -49,19 +50,51 @@ class SearchController extends Controller
         //
     }
 
+    // public function search(Request $request)
+    // {
+    //     try {
+    //         $query = $request->query('q');
+
+    //         if (!$query) {
+    //             return response()->json([], 200);
+    //         }
+
+    //         $tracks = Track::where('title', 'like', "%$query%")->get();
+    //         $albums = Album::where('title', 'like', "%$query%")->get();
+    //         $artists = User::where('role', 'artist')
+    //             ->where('username', 'like', "%$query%")
+    //             ->get();
+
+    //         return response()->json([
+    //             'tracks' => $tracks,
+    //             'albums' => $albums,
+    //             'artists' => $artists,
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         Log::error('Search Error: ' . $e->getMessage());
+    //         return response()->json(['error' => 'Something went wrong'], 500);
+    //     }
+    // }
+
 
     public function search(Request $request)
     {
-        $q = $request->query('q');
+        $query = $request->query('q');
 
-        $artists = User::where('name', 'like', "%$q%")->limit(5)->get();
-        $albums = Album::where('title', 'like', "%$q%")->limit(5)->get();
-        $tracks = Track::where('title', 'like', "%$q%")->limit(5)->get();
+        if (!$query) {
+            return response()->json([], 200);
+        }
+
+        $tracks = Track::where('title', 'like', "%$query%")->get();
+        $albums = Album::where('title', 'like', "%$query%")->get();
+        $artists = User::where('role', 'artist')
+            ->where('username', 'like', "%$query%")
+            ->get();
 
         return response()->json([
-            'artists' => $artists,
-            'albums' => $albums,
             'tracks' => $tracks,
+            'albums' => $albums,
+            'artists' => $artists,
         ]);
     }
 }
