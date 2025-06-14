@@ -14,7 +14,8 @@ use App\Http\Controllers\{
     LikeController,
     LibraryController,
     GenreController,
-    ProfileController
+    ProfileController,
+    SearchController
 };
 
 
@@ -37,6 +38,7 @@ Route::get('/users/{public_id}', [UserController::class, 'showByPublicId']);
 
 Route::get('/users/{public_id}/albums', [AlbumController::class, 'getByPublicId']);
 
+Route::get('/search', [SearchController::class, 'search']);
 
 
 
