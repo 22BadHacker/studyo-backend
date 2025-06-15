@@ -109,4 +109,16 @@ class AlbumController extends Controller
         return response()->json($albums);
     }
 
+
+
+
+    public function showByPublicId($public_id)
+    {
+        $album = Album::where('public_id', $public_id)
+            ->with('tracks', 'user') // assuming a hasMany relationship
+            ->firstOrFail();
+
+        return response()->json($album);
+    }
+
 }

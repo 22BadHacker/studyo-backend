@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Album extends Model
 {
@@ -26,5 +27,16 @@ class Album extends Model
     public function tracks()
     {
         return $this->hasMany(Track::class);
+    }
+
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($album) {
+            $album->public_id = Str::random(22); // 22 Example: user_6f3a9b2c1a2b
+            // $user->public_id = 'user_' . Str::random(22); // 22 Example: user_6f3a9b2c1a2b
+        });
     }
 }

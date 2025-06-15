@@ -9,6 +9,7 @@ use App\Http\Controllers\{
     UserController,
     TrackController,
     AlbumController,
+    DashboardController,
     PlaylistController,
     FollowController,
     LikeController,
@@ -33,6 +34,7 @@ Route::post('/google-auth', [AuthController::class, 'googleAuth']);
 Route::get('/artists', [UserController::class, 'artists']);
 
 Route::get('/users/{public_id}', [UserController::class, 'showByPublicId']);
+Route::get('/albums/{public_id}', [AlbumController::class, 'showByPublicId']);
 
 
 
@@ -100,7 +102,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 
-
+    Route::get('/dashboard', [DashboardController::class, 'index']);
 
 
     // new User Profilees 
