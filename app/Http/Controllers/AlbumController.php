@@ -96,4 +96,17 @@ class AlbumController extends Controller
         return response()->json($albums);
     }
 
+
+
+
+    public function myAlbums()
+    {
+        $user = auth()->user();
+
+        // Return albums where the artist is the current user
+        $albums = Album::where('user_id', $user->id)->get();
+
+        return response()->json($albums);
+    }
+
 }

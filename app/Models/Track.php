@@ -11,12 +11,13 @@ class Track extends Model
 
     protected $fillable = [
         'title',
-        'genre',
+        'genre_id',
         'file_path',
         'cover_image',
         'duration',
         'user_id',
         'album_id',
+        'release_date',
     ];
 
     // Relationship: A track belongs to a user (artist)

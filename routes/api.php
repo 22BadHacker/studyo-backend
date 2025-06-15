@@ -44,6 +44,8 @@ Route::get('/search', [SearchController::class, 'search']);
 
 
 Route::middleware('auth:sanctum')->group(function () {
+
+    Route::get('/my-albums', [AlbumController::class, 'myAlbums']);
     
     // To upadate profile
     Route::put('/profile', [AuthController::class, 'update']);
@@ -72,7 +74,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     // Tracks
-    Route::apiResource('tracks', TrackController::class);
+    // Route::apiResource('tracks', TrackController::class);
+    Route::post('/tracks', [TrackController::class, 'store']);
 
     // Albums
     Route::apiResource('albums', AlbumController::class);

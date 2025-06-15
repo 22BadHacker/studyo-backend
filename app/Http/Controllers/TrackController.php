@@ -26,20 +26,21 @@ class TrackController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|string',
-            'file_path' => 'required|mimes:mp3,wav',
-            'cover_image' => 'nullable|image',
-            'duration' => 'required|integer',
+            'title' => 'required|string|max:255',
+            'file_path' => 'required|file|mimes:mp3,wav,aac|max:20480',
+            'cover_image' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+            // 'duration' => 'required|integer',
             'album_id' => 'nullable|exists:albums,id',
-            'genre_id' => 'required|exists:genres,id',
+            'genre_id' => 'nullable|exists:genres,id',
+            'release_date' => 'nullable|date',
         ]);
 
         $validated['user_id'] = auth()->id();
 
-        $validated['file_path'] = $request->file('file_path')->store('tracks', 'public');
+        $validated['file_path'] = $request->file('file_path')->store('tracks/audio', 'public');
 
         if ($request->hasFile('cover_image')) {
-            $validated['cover_image'] = $request->file('cover_image')->store('track_covers', 'public');
+            $validated['cover_image'] = $request->file('cover_image')->store('track/covers', 'public');
         }
 
         $track = Track::create($validated);
