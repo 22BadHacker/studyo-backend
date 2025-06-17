@@ -14,10 +14,10 @@ class Track extends Model
         'genre_id',
         'file_path',
         'cover_image',
-        'duration',
         'user_id',
         'album_id',
         'release_date',
+        'duration',
     ];
 
     // Relationship: A track belongs to a user (artist)

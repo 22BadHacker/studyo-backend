@@ -105,6 +105,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index']);
 
 
+
+    Route::post('/tracks/{id}/toggle-popular', [TrackController::class, 'togglePopular']);
+
     // new User Profilees 
     Route::get('/user/profile', [UserController::class, 'edit']);
     Route::put('/user/profile', [UserController::class, 'update']);
@@ -112,9 +115,21 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 
+Route::get('/users/{public_id}/tracks', [TrackController::class, 'getByUser']);
+
+
+    
+    
+
+Route::get('/my-tracks', [UserController::class, 'myTracks']);
+
+
+Route::get('/my-tracks/preview', [TrackController::class, 'preview']);
+
 Route::get('/genres', [GenreController::class, 'index']);
 Route::post('/genres', [GenreController::class, 'store']); 
 
 
+Route::get('/tracks', [TrackController::class, 'index']);
 
 // Route::get('/follow/stats/{id}', [FollowController::class, 'stats']);

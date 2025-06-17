@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('albums', function (Blueprint $table) {
-            $table->string('public_id')->unique()->after('id');
+        Schema::table('tracks', function (Blueprint $table) {
+            $table->dropColumn('track_number');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('albums', function (Blueprint $table) {
-            $table->dropColumn('public_id');
+        Schema::table('tracks', function (Blueprint $table) {
+            $table->string('track_number')->nullable();
         });
     }
 };

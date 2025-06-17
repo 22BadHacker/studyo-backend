@@ -173,6 +173,11 @@ class UserController extends Controller
         return response()->json($user);
     }
 
+    public function myTracks()
+    {
+        return auth()->user()->tracks()->with('genre', 'album')->latest()->get();
+    }
+
 
     
 

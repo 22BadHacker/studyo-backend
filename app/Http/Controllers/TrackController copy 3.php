@@ -56,7 +56,7 @@ class TrackController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'file_path' => 'required|file|mimes:mp3,wav,aac|max:20480',
             'cover_image' => 'nullable|image|mimes:jpeg,png,jpg, webp|max:5120',
@@ -66,45 +66,17 @@ class TrackController extends Controller
             'release_date' => 'nullable|date',
         ]);
 
-        // $validated['user_id'] = auth()->id();
+        $validated['user_id'] = auth()->id();
 
-        $audioFile = $request->file('file_path');
-        $audioPath = $audioFile->store('tracks/audio', 'public');
-
-
-        $getID3 = new \getID3;
-        $fileInfo = $getID3->analyze($audioFile->getRealPath());
-
-
-        $duration = isset($fileInfo['playtime_string']) ? $fileInfo['playtime_string'] : null;
-
-
-
+        $validated['file_path'] = $request->file('file_path')->store('tracks/audio', 'public');
 
         if ($request->hasFile('cover_image')) {
-            $coverImage = $request->file('cover_image');
-           $coverPath = $coverImage->store('track/covers', 'public');
+            $validated['cover_image'] = $request->file('cover_image')->store('track/covers', 'public');
         }
 
+        $track = Track::create($validated);
 
-
-         $track = new Track();
-        $track->title = $request->title;
-        $track->file_path = $audioPath;
-        $track->cover_image = $coverPath;
-        $track->album_id = $request->album_id;
-        $track->genre_id = $request->genre_id;
-        $track->release_date = $request->release_date;
-        $track->duration = $duration; // e.g., "3:47"
-        $track->user_id = auth()->id(); // make sure user is authenticated
-        $track->save();
-
-        // $track = Track::create($validated);
-
-         return response()->json([
-        'message' => 'Track uploaded successfully!',
-        'track' => $track,
-        ], 201);
+        return response()->json($track, 201);
 
        
     }

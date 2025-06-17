@@ -56,7 +56,7 @@ class TrackController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+     $request->validate([
             'title' => 'required|string|max:255',
             'file_path' => 'required|file|mimes:mp3,wav,aac|max:20480',
             'cover_image' => 'nullable|image|mimes:jpeg,png,jpg, webp|max:5120',
@@ -165,19 +165,7 @@ class TrackController extends Controller
 
     public function togglePopular($id)
     {
-        // $track = Track::where('id', $id)->where('user_id', auth()->id())->first();
-
-        // if (!$track) {
-        //     return response()->json(['message' => 'Track not found or unauthorized'], 404);
-        // }
-
-        // $track->is_popular = !$track->is_popular;
-        // $track->save();
-
-        // return response()->json([
-        //     'message' => 'Track popularity updated',
-        //     'is_popular' => $track->is_popular
-        // ]);
+        
 
         $track = Track::where('id', $id)->where('user_id', auth()->id())->first();
 

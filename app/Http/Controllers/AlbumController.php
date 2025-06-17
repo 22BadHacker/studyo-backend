@@ -87,11 +87,12 @@ class AlbumController extends Controller
 
     public function getByPublicId($public_id)
     {
-        $user = User::where('public_id', $public_id)->firstOrFail();
+        // $user = User::where('public_id', $public_id)->firstOrFail();
 
-        $albums = Album::where('user_id', $user->id)
-            ->with('genre') 
-            ->get();
+        $albums = Album::where('$public_id', $public_id)
+            ->with('tracks', 'user') 
+            ->get()
+            ->firstOrFail();
 
         return response()->json($albums);
     }
@@ -115,7 +116,7 @@ class AlbumController extends Controller
     public function showByPublicId($public_id)
     {
         $album = Album::where('public_id', $public_id)
-            ->with('tracks', 'user') // assuming a hasMany relationship
+            ->with('tracks', 'user')
             ->firstOrFail();
 
         return response()->json($album);
