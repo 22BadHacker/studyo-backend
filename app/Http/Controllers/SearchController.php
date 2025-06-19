@@ -85,8 +85,8 @@ class SearchController extends Controller
             return response()->json([], 200);
         }
 
-        $tracks = Track::where('title', 'like', "%$query%")->get();
-        $albums = Album::where('title', 'like', "%$query%")->get();
+        $tracks = Track::with('user')->where('title', 'like', "%$query%")->get();
+        $albums = Album::with('user')->where('title', 'like', "%$query%")->get();
         $artists = User::where('role', 'artist')
             ->where('username', 'like', "%$query%")
             ->get();
