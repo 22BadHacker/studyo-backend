@@ -59,7 +59,7 @@ class TrackController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'file_path' => 'required|file|mimes:mp3,wav,aac|max:20480',
-            'cover_image' => 'nullable|image|mimes:jpeg,png,jpg, webp|max:5120',
+            'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
             // 'duration' => 'required|integer',
             'album_id' => 'nullable|exists:albums,id',
             'genre_id' => 'nullable|exists:genres,id',

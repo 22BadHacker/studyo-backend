@@ -85,11 +85,42 @@ class SearchController extends Controller
             return response()->json([], 200);
         }
 
-        $tracks = Track::with('user')->where('title', 'like', "%$query%")->get();
-        $albums = Album::with('user')->where('title', 'like', "%$query%")->get();
-        $artists = User::where('role', 'artist')
-            ->where('username', 'like', "%$query%")
+       $tracks = Track::with('user')
+            ->where(function ($q) use ($query) {
+                $q->where('title', 'like', "$query%")
+                ->orWhere('title', 'like', "%$query%");
+            })
+            ->orderByRaw("CASE 
+                WHEN title LIKE ? THEN 1
+                WHEN title LIKE ? THEN 2
+                ELSE 3
+            END", ["$query%", "%$query%"])
             ->get();
+
+        $albums = Album::with('user')
+            ->where(function ($q) use ($query) {
+                $q->where('title', 'like', "$query%")
+                ->orWhere('title', 'like', "%$query%");
+            })
+            ->orderByRaw("CASE 
+                WHEN title LIKE ? THEN 1
+                WHEN title LIKE ? THEN 2
+                ELSE 3
+            END", ["$query%", "%$query%"])
+            ->get();
+
+        $artists = User::where('role', 'artist')
+            ->where(function ($q) use ($query) {
+                $q->where('username', 'like', "$query%")     // starts with
+                ->orWhere('username', 'like', "%$query%"); // contains
+            })
+            ->orderByRaw("CASE 
+                WHEN username LIKE ? THEN 1
+                WHEN username LIKE ? THEN 2
+                ELSE 3
+            END", ["$query%", "%$query%"])
+            ->get();
+
 
         return response()->json([
             'tracks' => $tracks,

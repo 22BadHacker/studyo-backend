@@ -43,6 +43,10 @@ Route::get('/users/{public_id}/albums', [AlbumController::class, 'getByPublicId'
 Route::get('/search', [SearchController::class, 'search']);
 
 
+// related artist
+Route::get('/artist/{public_id}', [UserController::class, 'showArtist']);
+
+
 
 
 Route::middleware('auth:sanctum')->group(function () {
