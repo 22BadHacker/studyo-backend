@@ -104,7 +104,6 @@ class AlbumController extends Controller
     {
         $user = auth()->user();
 
-        // Return albums where the artist is the current user
         $albums = Album::where('user_id', $user->id)->get();
 
         return response()->json($albums);
@@ -115,11 +114,26 @@ class AlbumController extends Controller
 
     public function showByPublicId($public_id)
     {
-        $album = Album::where('public_id', $public_id)
-            ->with('tracks', 'user')
-            ->firstOrFail();
+        $album = Album::with(['user', 'tracks'])->where('public_id', $public_id)->firstOrFail();
 
-        return response()->json($album);
+        // Get more albums by same user (excluding current album)
+        $moreAlbums = Album::where('user_id', $album->user_id)
+            ->where('id', '!=', $album->id)
+            ->take(6)
+            ->get();
+
+        return response()->json([
+            'album' => $album,
+            'more_albums' => $moreAlbums,
+        ]);
     }
+    // public function showByPublicId($public_id)
+    // {
+    //     $album = Album::where('public_id', $public_id)
+    //         ->with('tracks', 'user')
+    //         ->firstOrFail();
+
+    //     return response()->json($album);
+    // }
 
 }
