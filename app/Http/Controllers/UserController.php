@@ -184,14 +184,14 @@ class UserController extends Controller
         // Get the current artist by public_id
         $artist = User::where('public_id', $public_id)
             ->where('role', 'artist')
-            ->with(['albums.tracks']) // Load albums + tracks if needed
+            // ->with(['albums.tracks']) // Load albums + tracks if needed
             ->firstOrFail();
 
         // Fetch 6 random related artists (excluding the current one)
         $relatedArtists = User::where('role', 'artist')
             ->where('id', '!=', $artist->id)
             ->inRandomOrder()
-            ->take(6)
+            ->take(30)
             ->get();
 
         return response()->json([
