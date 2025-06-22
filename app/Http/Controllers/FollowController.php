@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class FollowController extends Controller
 {
@@ -48,24 +49,55 @@ class FollowController extends Controller
         //
     }
 
-   public function follow($id)
+    public function toggleFollow(Request $request, $artistId)
     {
-        $user = User::findOrFail($id);
-        Auth::user()->following()->attach($user->id);
-        return response()->json(['message' => 'Followed']);
+        $user = auth()->user();
+
+        $artist = User::where('id', $artistId)->where('role', 'artist')->firstOrFail();
+
+        $alreadyFollowing = DB::table('follows')
+            ->where('follower_id', $user->id)
+            ->where('followed_id', $artist->id)
+            ->exists();
+
+        if ($alreadyFollowing) {
+            DB::table('follows')
+                ->where('follower_id', $user->id)
+                ->where('followed_id', $artist->id)
+                ->delete();
+
+            return response()->json(['followed' => false]);
+        } else {
+            DB::table('follows')->insert([
+                'follower_id' => $user->id,
+                'followed_id' => $artist->id,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            return response()->json(['followed' => true]);
+        }
     }
 
-    public function unfollow($id)
+    public function followedArtists()
     {
-        $user = User::findOrFail($id);
-        Auth::user()->following()->detach($user->id);
-        return response()->json(['message' => 'Unfollowed']);
+        $user = auth()->user();
+
+        $artists = $user->following()->where('role', 'artist')->get(['id', 'username', 'profile_image', 'public_id']);
+
+        return response()->json($artists);
     }
 
-    public function check($id)
+    public function isFollowing($artistId)
     {
-        $user = User::findOrFail($id);
-        $isFollowing = Auth::user()->following->contains($user->id);
-        return response()->json(['isFollowing' => $isFollowing]);
+        $user = auth()->user();
+
+        $isFollowing = DB::table('follows')
+            ->where('follower_id', $user->id)
+            ->where('followed_id', $artistId)
+            ->exists();
+
+        return response()->json(['is_following' => $isFollowing]);
     }
+    
 }

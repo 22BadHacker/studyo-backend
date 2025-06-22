@@ -100,9 +100,19 @@ Route::middleware('auth:sanctum')->group(function () {
     // Route::apiResource('genres', GenreController::class)->only(['index', 'show']);
 
 
-    Route::post('/follow/{id}', [FollowController::class, 'follow']);
-    Route::post('/unfollow/{id}', [FollowController::class, 'unfollow']);
-    Route::get('/follow-status/{id}', [FollowController::class, 'check']);
+    // Route::post('/follow/{id}', [FollowController::class, 'follow']);
+    // Route::post('/unfollow/{id}', [FollowController::class, 'unfollow']);
+    // Route::get('/follow-status/{id}', [FollowController::class, 'check']);
+
+
+    // Route::post('/follow/{artistId}', [UserController::class, 'toggleFollow']);
+    // Route::get('/user/following', [UserController::class, 'followedArtists']);
+    // Route::get('/follow/check/{artistId}', [UserController::class, 'isFollowing']);
+
+
+    Route::post('/follow/{id}', [UserController::class, 'follow']);
+    Route::post('/unfollow/{id}', [UserController::class, 'unfollow']);
+    Route::get('/is-following/{id}', [UserController::class, 'isFollowing']);
 
 
 
@@ -137,3 +147,10 @@ Route::post('/genres', [GenreController::class, 'store']);
 Route::get('/tracks', [TrackController::class, 'index']);
 
 // Route::get('/follow/stats/{id}', [FollowController::class, 'stats']);
+
+
+
+
+Route::get('/users/{id}/followed-artists', [UserController::class, 'followedArtists']);
+Route::get('/users/{public_id}/following', [UserController::class, 'following']);
+

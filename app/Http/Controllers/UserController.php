@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Follow;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -199,6 +201,83 @@ class UserController extends Controller
             'related_artists' => $relatedArtists,
         ]);
     }
+
+
+
+
+
+
+    public function follow($id)
+{
+    $user = auth()->user();
+    if ($user->id == $id) return response()->json(['message' => 'Cannot follow yourself'], 400);
+
+    $exists = Follow::where('follower_id', $user->id)->where('followed_id', $id)->exists();
+    if (!$exists) {
+        Follow::create([
+            'follower_id' => $user->id,
+            'followed_id' => $id,
+        ]);
+    }
+
+    return response()->json(['message' => 'Followed']);
+}
+
+    public function unfollow($id)
+    {
+        $user = auth()->user();
+        Follow::where('follower_id', $user->id)->where('followed_id', $id)->delete();
+
+        return response()->json(['message' => 'Unfollowed']);
+    }
+
+    public function isFollowing($id)
+    {
+        $user = auth()->user();
+        $isFollowing = Follow::where('follower_id', $user->id)
+            ->where('followed_id', $id)
+            ->exists();
+
+        return response()->json(['following' => $isFollowing]);
+    }
+
+
+
+
+    public function followedArtists($id)
+    {
+        $user = User::findOrFail($id);
+
+        // Get users that this user is following (only artists)
+        $followed = Follow::with('followed')
+            ->where('follower_id', $user->id)
+            ->get()
+            ->pluck('followed')
+            ->filter(fn ($u) => $u->role === 'artist')
+            ->values();
+
+        return response()->json($followed);
+    }
+
+
+    public function following($public_id)
+    {
+        // Get the user by public_id
+        $user = User::where('public_id', $public_id)->firstOrFail();
+
+        $followed = Follow::with('followed')
+            ->where('follower_id', $user->id)
+            ->get()
+            ->pluck('followed')
+            ->filter(fn ($u) => $u->role === 'artist')
+            ->values();
+
+        return response()->json($followed);
+    }
+
+
+
+    
 
 
     
