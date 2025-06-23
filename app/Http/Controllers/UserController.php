@@ -166,7 +166,7 @@ class UserController extends Controller
 
     public function showByPublicId($public_id)
     {
-        $user = User::where('public_id', $public_id)->with(['tracks', 'albums', 'playlists', ])->first();
+        $user = User::where('public_id', $public_id)->with(['tracks', 'albums', 'playlists', 'followed', 'following'])->first();
 
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
