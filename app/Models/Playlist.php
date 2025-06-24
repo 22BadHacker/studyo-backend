@@ -4,12 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Playlist extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','cover_image', 'user_id'];
+    protected $fillable = ['name','cover_image', 'user_id', 'description', 'is_public'];
+
+    protected $appends = ['cover_url'];
+
+    public function getCoverUrlAttribute()
+    {
+        return $this->cover_image ? asset('storage/' . $this->cover_image) : null;
+    }
 
     public function user()
     {
@@ -25,4 +33,16 @@ class Playlist extends Model
     {
         return $this->belongsToMany(User::class, 'library_playlists')->withTimestamps();
     }
+
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($playlist) {
+            $playlist->public_id = Str::random(22); /
+        });
+    }
+
+
 }

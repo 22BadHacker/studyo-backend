@@ -92,24 +92,20 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     // Custom routes to manage tracks in a playlist
-    Route::post('/playlists/{playlist}/tracks', [PlaylistController::class, 'addTrack']);
-    Route::delete('/playlists/{playlist}/tracks/{track}', [PlaylistController::class, 'removeTrack']);
+    // Route::post('/playlists/{public_id}/add-track', [PlaylistController::class, 'addTrack']);
+    // Route::post('/playlists/{public_id}/remove-track', [PlaylistController::class, 'removeTrack']);
+    Route::post('/playlists/{playlist}/add-track', [PlaylistController::class, 'addTrack']);
+    Route::delete('/playlists/{playlist}/remove-track', [PlaylistController::class, 'removeTrack']);
 
 
-    // Genres
-    // Route::apiResource('genres', GenreController::class)->only(['index', 'show']);
 
+    Route::get('/playlists', [PlaylistController::class, 'index']);           // Get all playlists for auth user
+    Route::post('/playlists', [PlaylistController::class, 'store']);          // Create new playlist
+    Route::get('/playlists/{public_id}', [PlaylistController::class, 'show']); // Get a playlist by public_id
+    Route::put('/playlists/{public_id}', [PlaylistController::class, 'update']); // Update playlist
+    Route::delete('/playlists/{public_id}', [PlaylistController::class, 'destroy']); // Delete playlist
 
-    // Route::post('/follow/{id}', [FollowController::class, 'follow']);
-    // Route::post('/unfollow/{id}', [FollowController::class, 'unfollow']);
-    // Route::get('/follow-status/{id}', [FollowController::class, 'check']);
-
-
-    // Route::post('/follow/{artistId}', [UserController::class, 'toggleFollow']);
-    // Route::get('/user/following', [UserController::class, 'followedArtists']);
-    // Route::get('/follow/check/{artistId}', [UserController::class, 'isFollowing']);
-
-
+    // Follow
     Route::post('/follow/{id}', [UserController::class, 'follow']);
     Route::post('/unfollow/{id}', [UserController::class, 'unfollow']);
     Route::get('/is-following/{id}', [UserController::class, 'isFollowing']);
