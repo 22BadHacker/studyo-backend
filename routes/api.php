@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-// use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,6 +14,7 @@ use App\Http\Controllers\{
     LikeController,
     LibraryController,
     GenreController,
+    PlaylistTrackController,
     ProfileController,
     SearchController
 };
@@ -39,6 +39,10 @@ Route::get('/albums/{public_id}', [AlbumController::class, 'showByPublicId']);
 
 
 Route::get('/users/{public_id}/albums', [AlbumController::class, 'getByPublicId']);
+
+
+Route::get('/users/{user}/playlists', [PlaylistController::class, 'userPlaylists']);
+
 
 Route::get('/search', [SearchController::class, 'search']);
 
@@ -87,23 +91,38 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('albums', AlbumController::class);
 
     // Playlist routes (only index & store)
-    Route::get('/playlists', [PlaylistController::class, 'index']);
-    Route::post('/playlists', [PlaylistController::class, 'store']);
+    // Route::get('/playlists', [PlaylistController::class, 'index']);
+    // Route::post('/playlists', [PlaylistController::class, 'store']);
 
 
     // Custom routes to manage tracks in a playlist
     // Route::post('/playlists/{public_id}/add-track', [PlaylistController::class, 'addTrack']);
     // Route::post('/playlists/{public_id}/remove-track', [PlaylistController::class, 'removeTrack']);
-    Route::post('/playlists/{playlist}/add-track', [PlaylistController::class, 'addTrack']);
-    Route::delete('/playlists/{playlist}/remove-track', [PlaylistController::class, 'removeTrack']);
+
+    // Route::post('/playlists/{playlist}/add-track', [PlaylistController::class, 'addTrack']);
+    // Route::delete('/playlists/{playlist}/remove-track', [PlaylistController::class, 'removeTrack']);
+
+    // Route::post('/playlists/{playlist}/tracks', [PlaylistController::class, 'addTrack']);
+    // Route::delete('/playlists/{playlist}/tracks/{track}', [PlaylistController::class, 'removeTrack']);
+
+      // Track management
+    // Route::post('/playlists/{playlistId}/tracks', [PlaylistController::class, 'addTrack']);
+    // Route::delete('/playlists/{playlistId}/tracks', [PlaylistController::class, 'removeTrack']);
+    
+    // Additional useful routes
+    // Route::get('/user/playlists', [PlaylistController::class, 'userPlaylists']);
+
+    Route::post('/playlists', [PlaylistController::class, 'store']); // create new
+    Route::get('/users/{id}/playlists', [PlaylistController::class, 'userPlaylists']); // get user playlists
+    Route::post('/playlists/{playlist}/tracks', [PlaylistTrackController::class, 'store']); // add track to playlist
 
 
 
-    Route::get('/playlists', [PlaylistController::class, 'index']);           // Get all playlists for auth user
-    Route::post('/playlists', [PlaylistController::class, 'store']);          // Create new playlist
-    Route::get('/playlists/{public_id}', [PlaylistController::class, 'show']); // Get a playlist by public_id
-    Route::put('/playlists/{public_id}', [PlaylistController::class, 'update']); // Update playlist
-    Route::delete('/playlists/{public_id}', [PlaylistController::class, 'destroy']); // Delete playlist
+    // Route::get('/playlists', [PlaylistController::class, 'index']);           // Get all playlists for auth user
+    // Route::post('/playlists', [PlaylistController::class, 'store']);          // Create new playlist
+    // Route::get('/playlists/{public_id}', [PlaylistController::class, 'show']); // Get a playlist by public_id
+    // Route::put('/playlists/{public_id}', [PlaylistController::class, 'update']); // Update playlist
+    // Route::delete('/playlists/{public_id}', [PlaylistController::class, 'destroy']); // Delete playlist
 
     // Follow
     Route::post('/follow/{id}', [UserController::class, 'follow']);
@@ -126,6 +145,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 Route::get('/users/{public_id}/tracks', [TrackController::class, 'getByUser']);
+Route::get('/user/{public_id}/playlists', [PlaylistController::class, 'getByPublicId']);
+
 
 
     

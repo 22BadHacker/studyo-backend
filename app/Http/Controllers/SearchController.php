@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Album;
+use App\Models\Playlist;
 use App\Models\Track;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -109,6 +110,20 @@ class SearchController extends Controller
             END", ["$query%", "%$query%"])
             ->get();
 
+        $playlists = Playlist::with('user')
+            ->where(function ($q) use ($query) {
+                $q->where('name', 'like', "$query%")
+                ->orWhere('name', 'like', "%$query%");
+            })
+            ->orderByRaw("CASE 
+                WHEN name LIKE ? THEN 1
+                WHEN name LIKE ? THEN 2
+                ELSE 3
+            END", ["$query%", "%$query%"])
+            ->get();
+
+       
+
         $artists = User::where('role', 'artist')
             ->where(function ($q) use ($query) {
                 $q->where('username', 'like', "$query%")     // starts with
@@ -126,6 +141,7 @@ class SearchController extends Controller
             'tracks' => $tracks,
             'albums' => $albums,
             'artists' => $artists,
+            'playlists' => $playlists
         ]);
     }
 }

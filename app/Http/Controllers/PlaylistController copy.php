@@ -56,18 +56,20 @@ class PlaylistController extends Controller
     }
 
 
-    public function addTrack(Request $request, Playlist $playlist)
-    {
-        $request->validate([
-            'track_id' => 'required|exists:tracks,id',
-        ]);
+    // public function addTrack(Request $request, Playlist $playlist)
+    // {
+    //     $request->validate([
+    //         'track_id' => 'required|exists:tracks,id',
+    //     ]);
 
-        // Attach track to playlist (prevent duplicates)
-        $playlist->tracks()->syncWithoutDetaching($request->track_id);
+    //     // Attach track to playlist (prevent duplicates)
+    //     $playlist->tracks()->syncWithoutDetaching($request->track_id);
 
-        return response()->json(['message' => 'Track added to playlist']);
-    }
+    //     return response()->json(['message' => 'Track added to playlist']);
+    // }
 
+
+    
     public function removeTrack(Playlist $playlist, Track $track)
     {
         $playlist->tracks()->detach($track->id);

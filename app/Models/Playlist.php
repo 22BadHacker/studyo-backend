@@ -12,12 +12,12 @@ class Playlist extends Model
 
     protected $fillable = ['name','cover_image', 'user_id', 'description', 'is_public'];
 
-    protected $appends = ['cover_url'];
+    // protected $appends = ['cover_url'];
 
-    public function getCoverUrlAttribute()
-    {
-        return $this->cover_image ? asset('storage/' . $this->cover_image) : null;
-    }
+    // public function getCoverUrlAttribute()
+    // {
+    //     return $this->cover_image ? asset('storage/' . $this->cover_image) : null;
+    // }
 
     public function user()
     {
@@ -40,8 +40,15 @@ class Playlist extends Model
         parent::boot();
 
         static::creating(function ($playlist) {
-            $playlist->public_id = Str::random(22); /
+            $playlist->public_id = Str::random(22); 
         });
+    }
+
+    public function previewTracks()
+    {
+        return $this->belongsToMany(Track::class)
+            ->select('id', 'title', 'artist_id', 'duration')
+            ->limit(3);
     }
 
 
