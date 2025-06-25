@@ -16,11 +16,15 @@ class PlaylistController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'cover_image' => 'nullable|image|max:2048',
+            'description' => 'nullable|string',
+            'is_public' => 'required|boolean',
         ]);
 
         $playlist = new Playlist();
         $playlist->name = $request->name;
         $playlist->user_id = $request->user()->id;
+        $playlist->description = $request->description;
+        $playlist->is_public = $request->boolean('is_public');
 
         if ($request->hasFile('cover_image')) {
             $playlist->cover_image = $request->file('cover_image')->store('playlist_covers', 'public');
