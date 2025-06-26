@@ -157,6 +157,7 @@ class UserController extends Controller
     {
         $artists = User::where('role', 'artist')
             ->select('id', 'public_id', 'username', 'profile_image', 'bio')
+            ->with(['albums', 'tracks'])
             ->get();
         // $artists = User::where('role', 'artist')->get();
 
