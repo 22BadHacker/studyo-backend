@@ -31,10 +31,12 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/google-auth', [AuthController::class, 'googleAuth']);
 
 
+Route::get('/albums/{public_id}', [AlbumController::class, 'showByPublicId']);
+
 Route::get('/artists', [UserController::class, 'artists']);
 
 Route::get('/users/{public_id}', [UserController::class, 'showByPublicId']);
-Route::get('/albums/{public_id}', [AlbumController::class, 'showByPublicId']);
+
 
 
 
@@ -145,7 +147,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 Route::get('/users/{public_id}/tracks', [TrackController::class, 'getByUser']);
-Route::get('/user/{public_id}/playlists', [PlaylistController::class, 'getByPublicId']);
+Route::get('/playlists/{public_id}', [PlaylistController::class, 'getByPublicId']);
 
 
 
