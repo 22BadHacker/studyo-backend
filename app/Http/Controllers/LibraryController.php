@@ -9,9 +9,20 @@ class LibraryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $user = $request->user();
+
+        $tracks = $user->tracks()->with('album')->latest()->get();
+        $albums = $user->albums()->latest()->get();
+        $playlists = $user->playlists()->latest()->get();
+
+        return response()->json([
+            'tracks' => $tracks,
+            'albums' => $albums,
+            'playlists' => $playlists,
+            'user' => $user
+        ]);
     }
 
     /**

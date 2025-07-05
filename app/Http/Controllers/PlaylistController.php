@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Album;
 use App\Models\Playlist;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -61,6 +62,10 @@ class PlaylistController extends Controller
         ->with(['tracks', 'user'])
         ->firstOrFail();
 
+        $albums = Album::where('user_id', $playlist->user_id)
+            ->with('tracks', 'user') 
+            ->get();
+
         // Get more playlists by the same user
         $morePlaylists = Playlist::where('user_id', $playlist->user_id)
             ->where('id', '!=', $playlist->id)
@@ -69,6 +74,7 @@ class PlaylistController extends Controller
 
         return response()->json([
             'playlist' => $playlist,
+            'albums' => $albums,
             'more_playlists' => $morePlaylists,
         ]);
     }

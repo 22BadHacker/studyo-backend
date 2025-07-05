@@ -116,7 +116,6 @@ class AlbumController extends Controller
     {
         $album = Album::with(['user', 'tracks'])->where('public_id', $public_id)->firstOrFail();
 
-        // Get more albums by same user (excluding current album)
         $moreAlbums = Album::where('user_id', $album->user_id)
             ->where('id', '!=', $album->id)
             ->take(6)
@@ -127,13 +126,36 @@ class AlbumController extends Controller
             'more_albums' => $moreAlbums,
         ]);
     }
-    // public function showByPublicId($public_id)
-    // {
-    //     $album = Album::where('public_id', $public_id)
-    //         ->with('tracks', 'user')
-    //         ->firstOrFail();
+//    public function latest()
+//     {
+//         $albums = Album::with('user')
+//             ->orderBy('created_at')
+//             ->take(10)
+//             ->get();
 
-    //     return response()->json($album);
-    // }
+//         return response()->json($albums);
+//     }
+
+    public function allAlbums()
+    {
+        $albums = Album::with(['user', 'tracks'])->take(8)->latest()->get();
+
+        return response()->json($albums);
+    }
+
+    public function selectedAlbums(Request $request)
+    {
+        $request->validate([
+            'album_ids' => 'required|array',
+            'album_ids.*' => 'integer|exists:albums,id'
+        ]);
+
+        $albums = Album::with(['user', 'tracks'])
+                    ->whereIn('id', $request->album_ids)
+                    ->get();
+
+        return response()->json($albums);
+    }
+
 
 }

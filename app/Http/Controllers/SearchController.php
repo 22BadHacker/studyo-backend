@@ -86,7 +86,7 @@ class SearchController extends Controller
             return response()->json([], 200);
         }
 
-       $tracks = Track::with('user')
+       $tracks = Track::with(['user', 'album'])
             ->where(function ($q) use ($query) {
                 $q->where('title', 'like', "$query%")
                 ->orWhere('title', 'like', "%$query%");

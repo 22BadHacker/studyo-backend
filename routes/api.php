@@ -33,9 +33,12 @@ Route::post('/google-auth', [AuthController::class, 'googleAuth']);
 
 Route::get('/albums/{public_id}', [AlbumController::class, 'showByPublicId']);
 
+
 Route::get('/artists', [UserController::class, 'artists']);
 
 Route::get('/users/{public_id}', [UserController::class, 'showByPublicId']);
+Route::get('/allAlbums', [AlbumController::class, 'allAlbums']);
+Route::get('/albums/selected', [AlbumController::class, 'selectedAlbums']);
 
 
 
@@ -76,6 +79,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
    Route::apiResource('users', UserController::class);
+
+  //  Library
+
+    Route::get('/library', [LibraryController::class, 'index']);
+    Route::delete('/tracks/{id}', [TrackController::class, 'destroy']);
+    Route::delete('/albums/{id}', [AlbumController::class, 'destroy']);
+    Route::put('/albums/{id}', [AlbumController::class, 'update']);
 
 
    // Profile
@@ -172,4 +182,6 @@ Route::get('/tracks', [TrackController::class, 'index']);
 
 Route::get('/users/{id}/followed-artists', [UserController::class, 'followedArtists']);
 Route::get('/users/{public_id}/following', [UserController::class, 'following']);
+
+Route::get('/albums/latest', [AlbumController::class, 'latest']);
 
